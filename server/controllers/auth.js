@@ -1,4 +1,4 @@
-import bcrypt from "bcrypt" 
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import User from "../models/User.js";
 
@@ -8,7 +8,7 @@ export const register = async (req, res) => {
     const {
       firstName,
       lastName,
-      email, 
+      email,
       password,
       picturePath,
       friends,
@@ -38,8 +38,6 @@ export const register = async (req, res) => {
   }
 };
 
-
-
 /* LOGGING IN */
 export const login = async (req, res) => {
   try {
@@ -51,26 +49,8 @@ export const login = async (req, res) => {
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-    console.log(token)
     delete user.password;
     res.status(200).json({ token, user });
-    console.log(user , "logged in")
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-
-export const updateProfilePicture = async (req, res) => {
-  try {
-    const { userId, picturePath } = req.body;
-    const user = await User.findById(userId);
-    if (!user) return res.status(404).json({ msg: "User not found." });
-
-    user.picturePath = picturePath;
-    await user.save();
-
-    res.status(200).json({ message: "Profile picture updated successfully." });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
